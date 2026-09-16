@@ -35,11 +35,12 @@ class Router
             PHP_URL_PATH
         );
 
-        $uri = preg_replace(
-            '#^/(?:Individual/)?(?:php-basic-mvc|php-mvc)(?:/public)?#',
-            '',
-            $uri
-        );
+        // Strip base folder if it exists in the URI
+        $basePath = 'PHP-MVC/PHP-MVC';
+        $uri = preg_replace('#^/?' . preg_quote($basePath, '#') . '(?:/public)?#i', '', $uri);
+        
+        // Also fallback for original paths
+        $uri = preg_replace('#^/(?:Individual/)?(?:php-basic-mvc|php-mvc)(?:/public)?#i', '', $uri);
 
         $uri = '/' . trim($uri, '/');
 
