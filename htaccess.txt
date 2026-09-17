@@ -1,0 +1,45 @@
+# ----------------------------------------------------------------------
+# 1. ROOT DIRECTORY RULES
+# ----------------------------------------------------------------------
+# Usually placed in: /var/www/PHP-MVC/.htaccess (or equivalent root)
+# Purpose: Forward all traffic to the public/ folder for security.
+
+<IfModule mod_rewrite.c>
+    # Turn on the URL rewriting engine
+    RewriteEngine On
+
+    # If the URL is empty (e.g. example.com/), route to public/
+    RewriteRule ^$ public/ [L]
+
+    # For everything else, capture the path (.*) and route to public/path
+    RewriteRule (.*) public/$1 [L]
+</IfModule>
+
+
+# ----------------------------------------------------------------------
+# 2. PUBLIC DIRECTORY RULES (FRONT CONTROLLER)
+# ----------------------------------------------------------------------
+# Usually placed in: /var/www/PHP-MVC/public/.htaccess
+# Purpose: Clean up URLs and route all application traffic to index.php
+
+<IfModule mod_rewrite.c>
+    # Turn on the URL rewriting engine
+    RewriteEngine On
+
+    # --- Redirect Trailing Slashes ---
+    # If the requested URL is not an existing directory
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # And the URL ends with a slash
+    RewriteCond %{REQUEST_URI} (.+)/$
+    # Redirect permanently (301) to the same URL without the slash
+    RewriteRule ^ %1 [L,R=301]
+
+    # --- Handle Front Controller ---
+    # If the requested URL is not an existing directory
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # And the requested URL is not an existing file (like an image or CSS)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    # Route the request to index.php so the PHP framework can handle it
+    RewriteRule ^ index.php [L]
+</IfModule>
+

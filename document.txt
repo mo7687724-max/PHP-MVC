@@ -1,0 +1,130 @@
+# How to Build a Custom PHP MVC Framework
+
+This guide outlines the step-by-step process of building this PHP MVC framework from scratch. It covers the directory structure, configuration, and how all the files connect to handle a user request.
+
+---
+
+## 1. Directory Structure
+
+Start by creating the root folders to separate your code logically:
+
+*   **`app/`**
+    The heart of the application. Contains your `Controllers`, `Models`, and the `Core` framework logic.
+*   **`public/`**
+    The document root. It holds publicly accessible files like CSS, JavaScript, and the main entry point (`index.php`).
+*   **`config/`**
+    Stores application configuration files.
+*   **`routes/`**
+    Contains the files where you define your application's URLs.
+*   **`resources/`**
+    Holds the HTML/PHP templates (Views) that the user sees.
+*   **`database/`**
+    Contains database migration scripts to build your tables.
+
+---
+
+## 2. Server Configuration & Entry Point
+
+The first files you should create handle incoming web traffic.
+
+**Files to create:**
+1.  **`.htaccess`** (in the root directory)
+    *   *Purpose:* Forces all traffic to go into the `public/` directory.
+2.  **`public/.htaccess`**
+    *   *Purpose:* Catches all requests and routes them to `index.php` (unless the user is requesting an actual file like an image). This gives you "pretty URLs".
+3.  **`public/index.php`**
+    *   *Purpose:* The "Front Controller". Every single request passes through this file.
+    *   *Actions:* Starts the session, requires all core files (or an autoloader), initializes the `Router`, loads the routes, and tells the router to process the request.
+
+---
+
+## 3. Core MVC Engine
+
+Next, build the internal framework components inside `app/Core/`:
+
+*   **`Router.php`**
+    Reads the requested URL and determines which Controller should handle it.
+*   **`Controller.php`**
+    The base class that all of your specific controllers will extend. It provides shared methods, like rendering a view.
+*   **`Database.php`**
+    A wrapper class (usually using PDO) that manages the connection to your MySQL database.
+
+---
+
+## 4. Environment and Configuration
+
+You need a way to manage settings (like database passwords) securely.
+
+**Files to create:**
+1.  **`.env`**
+    *   *Purpose:* Stores sensitive, environment-specific variables.
+2.  **`config/database.php`**
+    *   *Purpose:* Reads variables from the `.env` file to set up the configuration.
+    *   *Relationship:* The `app/Core/Database.php` class reads this config file to know how to connect to the database server.
+
+---
+
+## 5. Routing Definitions
+
+You need to tell the framework what to do when a user visits a specific URL.
+
+**File to create:**
+*   **`routes/web.php`**
+    *   *Purpose:* Maps a URL to a specific Controller method.
+    *   *Example:* When a user visits `/`, execute the `index` method on the `HomeController`.
+
+---
+
+## 6. Detailed Request Lifecycle (Workflow)
+
+When a user opens the project in their browser (e.g., navigating to the root `http://your-app.test/`), the application follows a strict, step-by-step workflow:
+
+### Step 1: The Web Server & `.htaccess`
+*   **Action:** The user's browser sends an HTTP GET request to the server.
+*   **File:** `/` (root `.htaccess`)
+*   **Process:** Apache reads the root `.htaccess` and sees that the request should be forwarded to the `public/` directory.
+*   **File:** `public/.htaccess`
+*   **Process:** Apache reads the `public/.htaccess`. It checks if the requested URL is an actual file or folder. Since `/` is not a real folder (mapped internally), it rewrites the URL and passes it to `public/index.php`.
+
+### Step 2: Bootstrapping (`public/index.php`)
+*   **Action:** PHP begins executing the entry point file.
+*   **File:** `public/index.php`
+*   **Process:**
+    1.  `session_start()` is called.
+    2.  All core dependencies are loaded via `require_once` (e.g., `Database.php`, `Router.php`, `Controller.php`, `Model.php`, `HomeController.php`).
+    3.  An instance of the Router is created: `$router = new Router();`.
+
+### Step 3: Route Registration
+*   **Action:** The application loads all available routes into the Router's memory.
+*   **File:** `routes/web.php` (included by `index.php`)
+*   **Process:** The Router registers HTTP verbs and paths. For example, it stores that `GET /` should map to the `HomeController`'s `index` method.
+
+### Step 4: Dispatching the Request
+*   **Action:** `index.php` calls `$router->dispatch()`.
+*   **File:** `app/Core/Router.php`
+*   **Process:**
+    1.  The Router analyzes the current requested URI (e.g., `/`) and the request method (e.g., `GET`).
+    2.  It loops through the registered routes and finds a match.
+
+### Step 5: Controller Execution
+*   **Action:** The Router instantiates the matched Controller and calls the matched method.
+*   **File:** `app/Controllers/HomeController.php`
+*   **Process:**
+    1.  `$controller = new HomeController();`
+    2.  `$controller->index();` is executed.
+
+### Step 6: Data Retrieval (Optional)
+*   **Action:** If data is needed, the Model communicates with the database.
+*   **Files:** `app/Models/Model.php` & `app/Core/Database.php`
+*   **Process:**
+    1.  A specific Model uses the core `Database` class.
+    2.  The `Database` class reads `config/database.php` (which reads from `.env`) to get the DB credentials and establishes a PDO connection.
+
+### Step 7: View Rendering and Response
+*   **Action:** The Controller combines the data (if any) with an HTML template.
+*   **Files:** `app/Controllers/HomeController.php` & `resources/views/home/welcome.php`
+*   **Process:**
+    1.  The Controller calls `$this->view('home/welcome');` (a method provided by the base `app/Core/Controller.php`).
+    2.  The view file (`resources/views/home/welcome.php`) is `included`.
+    3.  The final, parsed HTML is sent back across the network to the user's browser, completing the lifecycle.
+

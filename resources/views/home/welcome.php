@@ -1,6 +1,5 @@
 <?php
 $base = (isset($_SERVER['SCRIPT_NAME']) && ($d = dirname($_SERVER['SCRIPT_NAME'])) && $d !== '/' && $d !== '\\') ? preg_replace('#/public$#', '', $d) : '/php-mvc';
-$isLoggedIn = isset($_SESSION['user_id']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -77,52 +76,6 @@ $isLoggedIn = isset($_SESSION['user_id']);
             font-weight: 800;
         }
 
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-        }
-
-        .nav-link {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.15s ease;
-        }
-
-        .nav-link:hover {
-            color: var(--primary);
-        }
-
-        .auth-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 0.85rem;
-            padding: 0.35rem 0.75rem;
-            border-radius: 20px;
-            background: #f1f5f9;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        .auth-status.active {
-            background: #ecfdf5;
-            color: #065f46;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--warning);
-        }
-
-        .auth-status.active .status-dot {
-            background: var(--success);
-        }
-
         /* Hero section */
         .hero {
             padding: 4.5rem 1.5rem 3rem;
@@ -161,50 +114,6 @@ $isLoggedIn = isset($_SESSION['user_id']);
             color: var(--text-muted);
             max-width: 650px;
             margin: 0 auto 2rem;
-        }
-
-        .btn-group {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: #fff;
-            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
-        }
-
-        .btn-secondary {
-            background: #fff;
-            color: var(--dark);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: #f8fafc;
-            border-color: #cbd5e1;
         }
 
         /* Pipeline section */
@@ -407,14 +316,6 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <span class="logo-badge">MVC</span>
                 <span>PHP Basic Framework</span>
             </a>
-            <div class="nav-links">
-                <a href="<?= $base ?>/users" class="nav-link">Users</a>
-                <a href="<?= $base ?>/login" class="nav-link">Login</a>
-                <div class="auth-status <?= $isLoggedIn ? 'active' : '' ?>">
-                    <span class="status-dot"></span>
-                    <span><?= $isLoggedIn ? 'Authenticated' : 'Guest' ?></span>
-                </div>
-            </div>
         </div>
     </header>
 
@@ -423,15 +324,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
             <div class="container">
                 <span class="pill-badge">🚀 PHP 8.3 &bull; MVC Architecture</span>
                 <h1>Clean, Fast & Structured PHP</h1>
-                <p>Equipped with pipeline Middleware, robust Input Validation, PDO database abstraction, and clean template rendering.</p>
-                <div class="btn-group">
-                    <a href="<?= $base ?>/users" class="btn btn-primary">
-                        Go to Users CRUD &rarr;
-                    </a>
-                    <a href="<?= $base ?>/login" class="btn btn-secondary">
-                        <?= $isLoggedIn ? 'Auth Status (Logged In)' : 'Simulate Login' ?>
-                    </a>
-                </div>
+                <p>Equipped with PDO database abstraction and clean template rendering.</p>
             </div>
         </section>
 
@@ -469,30 +362,18 @@ $isLoggedIn = isset($_SESSION['user_id']);
                     <div class="pipeline-arrow">&rarr;</div>
                     <div class="pipeline-step">
                         <div class="step-num">Step 2</div>
-                        <div class="step-name">Middleware</div>
-                        <div class="step-desc">Auth & Guard checks</div>
-                    </div>
-                    <div class="pipeline-arrow">&rarr;</div>
-                    <div class="pipeline-step">
-                        <div class="step-num">Step 3</div>
-                        <div class="step-name">Validation</div>
-                        <div class="step-desc">Sanitize & Validate</div>
-                    </div>
-                    <div class="pipeline-arrow">&rarr;</div>
-                    <div class="pipeline-step">
-                        <div class="step-num">Step 4</div>
                         <div class="step-name">Controller</div>
                         <div class="step-desc">Application Logic</div>
                     </div>
                     <div class="pipeline-arrow">&rarr;</div>
                     <div class="pipeline-step">
-                        <div class="step-num">Step 5</div>
+                        <div class="step-num">Step 3</div>
                         <div class="step-name">Database</div>
                         <div class="step-desc">PDO &amp; Models</div>
                     </div>
                     <div class="pipeline-arrow">&rarr;</div>
                     <div class="pipeline-step">
-                        <div class="step-num">Step 6</div>
+                        <div class="step-num">Step 4</div>
                         <div class="step-name">View</div>
                         <div class="step-desc">Rendered HTML</div>
                     </div>
@@ -503,33 +384,11 @@ $isLoggedIn = isset($_SESSION['user_id']);
             <div class="grid">
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-icon">🛡️</div>
-                        <div class="card-title">Middleware</div>
-                    </div>
-                    <div class="card-body">
-                        Inspects requests before they hit the controller. Used for authentication, permission guards, and request throttling.
-                        <div class="code-block">$router->get('/users', [UserController::class, 'index'], [Authenticate::class]);</div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon">✓</div>
-                        <div class="card-title">Validation</div>
-                    </div>
-                    <div class="card-body">
-                        Fluent input validation for required fields, email formatting, and string lengths before database insertion.
-                        <div class="code-block">$validator->required('name', $name)->email('email', $email)->min('password', $pwd, 6);</div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
                         <div class="card-icon">⚡</div>
                         <div class="card-title">Controller &amp; Model</div>
                     </div>
                     <div class="card-body">
-                        Controllers manage business logic and CRUD, while models encapsulate table names and schema definitions.
+                        Controllers manage business logic, while models encapsulate table names and schema definitions.
                         <div class="code-block">class User extends Model {<br>&nbsp;&nbsp;public static string $table = 'users';<br>}</div>
                     </div>
                 </div>
@@ -539,7 +398,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
 
     <footer>
         <div class="container">
-            PHP Basic MVC &bull; Clean Architecture with Middleware & Validation
+            PHP Basic MVC &bull; Clean Architecture
         </div>
     </footer>
 
