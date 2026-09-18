@@ -6,3 +6,4 @@ abstract class Model
     public static array $fields = [];
 }
 
+
